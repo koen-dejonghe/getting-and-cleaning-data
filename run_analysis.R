@@ -44,7 +44,7 @@ read_observations <- function(measurement_file, response_file, subject_file, fea
   responses <- read_response(response_file, labels)
   subjects <- read_subjects(subject_file)
   # join the 3
-  cbind(measurements, responses, subjects)
+  cbind(responses, subjects, measurements)
 }
 
 
@@ -59,9 +59,9 @@ labels <- read_labels('UCI HAR Dataset/activity_labels.txt')
 
 # read training set
 training_set <- read_observations(
-  'UCI HAR Dataset/train/X_train.txt.100', 
-  'UCI HAR Dataset/train/y_train.txt.100', 
-  'UCI HAR Dataset/train/subject_train.txt.100',
+  'UCI HAR Dataset/train/X_train.txt', 
+  'UCI HAR Dataset/train/y_train.txt', 
+  'UCI HAR Dataset/train/subject_train.txt',
   features, labels)
 
 # read test set
@@ -74,6 +74,7 @@ test_set <- read_observations(
 full_set <- rbind(training_set, test_set)
 # View(full_set)
 
-tidy_set <- aggregate (full_set[, 1:66], list(activity = full_set$activity, subject = full_set$subject), mean)
-View(tidy_set)
+tidy_set <- aggregate (full_set[, 3:ncol(full_set)], list(activity = full_set$activity, subject = full_set$subject), mean)
+# View(tidy_set)
 
+write.table(tidy_set, file = 'tidy.txt', row.name = F)
